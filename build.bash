@@ -110,11 +110,11 @@ info "Building for Platforms"
 echo "- MacOS: x86_64 and arm64"
 #echo "- Mac Catalyst: x86_64 and arm64"
 echo "- iOS: arm64"
-#echo "- iOS Simulator: x86_64 and arm64"
-#if [[ $VISION_OS == 0 ]]; then
-# echo "- VisionOS: arm64"
-# echo "- VisionOS Simulator: arm64"
-#fi
+echo "- iOS Simulator: x86_64 and arm64"
+if [[ $VISION_OS == 0 ]]; then
+ echo "- VisionOS: arm64"
+ echo "- VisionOS Simulator: arm64"
+fi
 
 
 # MacOS Build
@@ -152,7 +152,7 @@ cmake -S$DDS_SRC_DIR -B"$CUR_DDS_BUILD" \
 -D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-DDS.cmake" \
 -D CMAKE_CXX_FLAGS="-Wno-shorten-64-to-32" \
 -G Xcode
-#cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS
+cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS
 
 pushd "$CUR_INSTALL/lib" > /dev/null
 libtool -static -D -o libfastdds-prebuild.a libfastdds.a libfastcdr.a libfoonathan_memory-0.7.3.a
@@ -161,12 +161,12 @@ popd > /dev/null
 
 # Mac Catalyst Build
 #info "Building for Mac Catalyst..."
-PLATFORM=maccatalyst
-CUR_MEMORY_BUILD=$MEMORY_BUILD_DIR/$PLATFORM
-CUR_CDR_BUILD=$CDR_BUILD_DIR/$PLATFORM
-CUR_DDS_BUILD=$DDS_BUILD_DIR/$PLATFORM
-CUR_INSTALL=$INSTALL_DIR/$PLATFORM
-mkdir -p $CUR_MEMORY_BUILD $CUR_CDR_BUILD $CUR_DDS_BUILD $CUR_INSTALL
+#PLATFORM=maccatalyst
+#CUR_MEMORY_BUILD=$MEMORY_BUILD_DIR/$PLATFORM
+#CUR_CDR_BUILD=$CDR_BUILD_DIR/$PLATFORM
+#CUR_DDS_BUILD=$DDS_BUILD_DIR/$PLATFORM
+#CUR_INSTALL=$INSTALL_DIR/$PLATFORM
+#mkdir -p $CUR_MEMORY_BUILD $CUR_CDR_BUILD $CUR_DDS_BUILD $CUR_INSTALL
 
 # Build foonathan memory
 #info2 "Building foonathan memory for x86_64 and arm64 on Mac Catalyst"
@@ -175,6 +175,7 @@ mkdir -p $CUR_MEMORY_BUILD $CUR_CDR_BUILD $CUR_DDS_BUILD $CUR_INSTALL
 #-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/mac-catalyst.toolchain.cmake" \
 #-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/foonathan-memory.cmake" \
 #-G Xcode
+#cmake --build "$CUR_MEMORY_BUILD" --config Release --target install -j $JOBS -- -sdk "iphoneos"
 #xcodebuild build -scheme install -destination 'generic/platform=macOS,variant=Mac Catalyst' -project "$CUR_MEMORY_BUILD/foonathan_memory_vendor.xcodeproj" -jobs $JOBS
 
 # Build Fast-CDR
@@ -250,7 +251,7 @@ popd > /dev/null
 
 
 # iOS Simulator Build
-#info "Building for iOS Simulator..."
+info "Building for iOS Simulator..."
 PLATFORM=iphonesimulator
 CUR_MEMORY_BUILD=$MEMORY_BUILD_DIR/$PLATFORM
 CUR_CDR_BUILD=$CDR_BUILD_DIR/$PLATFORM
@@ -259,42 +260,40 @@ CUR_INSTALL=$INSTALL_DIR/$PLATFORM
 mkdir -p $CUR_MEMORY_BUILD $CUR_CDR_BUILD $CUR_DDS_BUILD $CUR_INSTALL
 
 # Build foonathan memory
-#info2 "Building foonathan memory for arm64 on iOS Simulator"
-#cmake -S$MEMORY_SRC_DIR -B"$CUR_MEMORY_BUILD" \
-#-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
-#-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/ios-simulator.toolchain.cmake" \
-#-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/foonathan-memory.cmake" \
-#-G Xcode
-#cmake --build "$CUR_MEMORY_BUILD" --config Release --target install -j $JOBS -- -sdk "iphonesimulator"
+info2 "Building foonathan memory for arm64 on iOS Simulator"
+cmake -S$MEMORY_SRC_DIR -B"$CUR_MEMORY_BUILD" \
+-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
+-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/ios-simulator.toolchain.cmake" \
+-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/foonathan-memory.cmake" \
+-G Xcode
+cmake --build "$CUR_MEMORY_BUILD" --config Release --target install -j $JOBS -- -sdk "iphonesimulator"
 
 # Build Fast-CDR
-#info2 "Building Fast-CDR for arm64 on iOS Simulator"
-#cmake -S$CDR_SRC_DIR -B"$CUR_CDR_BUILD" \
-#-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
-#-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/ios-simulator.toolchain.cmake" \
-#-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-CDR.cmake" \
-#-G Xcode
-#cmake --build "$CUR_CDR_BUILD" --config Release --target install -j $JOBS -- -sdk "iphonesimulator"
+info2 "Building Fast-CDR for arm64 on iOS Simulator"
+cmake -S$CDR_SRC_DIR -B"$CUR_CDR_BUILD" \
+-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
+-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/ios-simulator.toolchain.cmake" \
+-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-CDR.cmake" \
+-G Xcode
+cmake --build "$CUR_CDR_BUILD" --config Release --target install -j $JOBS -- -sdk "iphonesimulator"
 
 # Build Fast-DDS
-#info2 "Building Fast-DDS for arm64 on iOS Simulator"
-#cmake -S$DDS_SRC_DIR -B"$CUR_DDS_BUILD" \
-#-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
-#-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/ios-simulator.toolchain.cmake" \
-#-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-DDS.cmake" \
-#-D foonathan_memory_DIR="$CUR_INSTALL/lib/foonathan_memory/cmake" \
-#-D fastcdr_DIR="$CUR_INSTALL/lib/cmake/fastcdr" \
-#-D CMAKE_CXX_FLAGS="-Wno-shorten-64-to-32" \
-#-D SHM_TRANSPORT_DEFAULT=OFF \
-#-G Xcode
-#cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS -- -sdk "iphonesimulator"
+info2 "Building Fast-DDS for arm64 on iOS Simulator"
+cmake -S$DDS_SRC_DIR -B"$CUR_DDS_BUILD" \
+-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
+-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/ios-simulator.toolchain.cmake" \
+-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-DDS.cmake" \
+-D foonathan_memory_DIR="$CUR_INSTALL/lib/foonathan_memory/cmake" \
+-D fastcdr_DIR="$CUR_INSTALL/lib/cmake/fastcdr" \
+-D CMAKE_CXX_FLAGS="-Wno-shorten-64-to-32" \
+-D SHM_TRANSPORT_DEFAULT=OFF \
+-G Xcode
+cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS -- -sdk "iphonesimulator"
 
-#pushd "$CUR_INSTALL/lib" > /dev/null
-#libtool -static -D -o libfastdds-prebuild.a libfastdds.a libfastcdr.a libfoonathan_memory-0.7.3.a
-#popd > /dev/null
+pushd "$CUR_INSTALL/lib" > /dev/null
+libtool -static -D -o libfastdds-prebuild.a libfastdds.a libfastcdr.a libfoonathan_memory-0.7.3.a
+popd > /dev/null
 
-
-VISION_OS=1
 if [[ $VISION_OS == 0 ]]; then
 # VisionOS Build
 info "Building for VisionOS..."
@@ -334,7 +333,56 @@ cmake -S$DDS_SRC_DIR -B"$CUR_DDS_BUILD" \
 -D CMAKE_CXX_FLAGS="-Wno-shorten-64-to-32" \
 -D SHM_TRANSPORT_DEFAULT=OFF \
 -G Xcode
-#cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS -- -sdk "xros"
+cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS -- -sdk "xros"
+
+pushd "$CUR_INSTALL/lib" > /dev/null
+libtool -static -D -o libfastdds-prebuild.a libfastdds.a libfastcdr.a libfoonathan_memory-0.7.3.a
+popd > /dev/null
+
+
+# VisionOS Simulator Build
+info "Building for VisionOS Simulator..."
+PLATFORM=xrsimulator
+CUR_MEMORY_BUILD=$MEMORY_BUILD_DIR/$PLATFORM
+CUR_CDR_BUILD=$CDR_BUILD_DIR/$PLATFORM
+CUR_DDS_BUILD=$DDS_BUILD_DIR/$PLATFORM
+CUR_INSTALL=$INSTALL_DIR/$PLATFORM
+mkdir -p $CUR_MEMORY_BUILD $CUR_CDR_BUILD $CUR_DDS_BUILD $CUR_INSTALL
+
+# Build foonathan memory
+info2 "Building foonathan memory for arm64 on VisionOS Simulator"
+cmake -S$MEMORY_SRC_DIR -B"$CUR_MEMORY_BUILD" \
+-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
+-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/visionos.toolchain.cmake" \
+-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/foonathan-memory.cmake" \
+-G Xcode
+cmake --build "$CUR_MEMORY_BUILD" --config Release --target install -j $JOBS -- -sdk "xrsimulator"
+
+# Build Fast-CDR
+info2 "Building Fast-CDR for arm64 on VisionOS Simulator"
+cmake -S$CDR_SRC_DIR -B"$CUR_CDR_BUILD" \
+-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
+-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/visionos.toolchain.cmake" \
+-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-CDR.cmake" \
+-G Xcode
+cmake --build "$CUR_CDR_BUILD" --config Release --target install -j $JOBS -- -sdk "xrsimulator"
+
+# Build Fast-DDS
+info2 "Building Fast-DDS for arm64 on VisionOS Simulator"
+cmake -S$DDS_SRC_DIR -B"$CUR_DDS_BUILD" \
+-D CMAKE_INSTALL_PREFIX="$CUR_INSTALL" \
+-D CMAKE_TOOLCHAIN_FILE="$CMAKE_DIR/visionos.toolchain.cmake" \
+-D CMAKE_PROJECT_INCLUDE="$CMAKE_DIR/Fast-DDS.cmake" \
+-D foonathan_memory_DIR="$CUR_INSTALL/lib/foonathan_memory/cmake" \
+-D fastcdr_DIR="$CUR_INSTALL/lib/cmake/fastcdr" \
+-D CMAKE_CXX_FLAGS="-Wno-shorten-64-to-32" \
+-D SHM_TRANSPORT_DEFAULT=OFF \
+-G Xcode
+cmake --build "$CUR_DDS_BUILD" --config Release --target install -j $JOBS -- -sdk "xrsimulator"
+
+pushd "$CUR_INSTALL/lib" > /dev/null
+libtool -static -D -o libfastdds-prebuild.a libfastdds.a libfastcdr.a libfoonathan_memory-0.7.3.a
+popd > /dev/null
 fi
 
 
@@ -344,6 +392,12 @@ xcodebuild -create-xcframework \
 -headers $INSTALL_DIR/macosx/include \
 -library $INSTALL_DIR/iphoneos/lib/libfastdds-prebuild.a \
 -headers $INSTALL_DIR/iphoneos/include \
+-library $INSTALL_DIR/iphonesimulator/lib/libfastdds-prebuild.a \
+-headers $INSTALL_DIR/iphonesimulator/include \
+-library $INSTALL_DIR/xros/lib/libfastdds-prebuild.a \
+-headers $INSTALL_DIR/xros/include \
+-library $INSTALL_DIR/xrsimulator/lib/libfastdds-prebuild.a \
+-headers $INSTALL_DIR/xrsimulator/include \
 -output $REPO_DIR/Fast-DDS.xcframework
 
 info "Built $TAG at $REPO_DIR/Fast-DDS.xcframework"
