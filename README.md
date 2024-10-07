@@ -1,53 +1,32 @@
-# FastDDSPrebuild
-## Prebuilt Eprosima [Fast-DDS](https://github.com/eProsima/Fast-DDS) (formerly FastRTPS) library for Apple platforms.
+# Fast-DDS-Prebuild
+## Prebuilt Eprosima [Fast-DDS](https://github.com/eProsima/Fast-DDS) v3 (formerly FastRTPS) library for Apple platforms.
 
 
 ### Supported platforms and architectures
-| Platform          |  Architectures     |
-|-------------------|--------------------|
-| macOS             | x86_64 arm64       |
-| iOS               | arm64              |
-| iOS Simulator     | x86_64 arm64       |
-| Mac Catalyst      | x86_64 arm64       |
-| xrOS              | arm64              |
-| xrOS Simulator    | arm64              |
+| Platform                        |  Architectures     |
+|---------------------------------|--------------------|
+| macOS                           | x86_64 arm64       |
+| iOS                             | arm64              |
+| iOS Simulator                   | x86_64 arm64       |
+| Mac Catalyst (Not Working)      | x86_64 arm64       |
+| xrOS                            | arm64              |
+| xrOS Simulator                  | arm64              |
 
 ### Usage
 
-Add line to you package.swift dependencies:
+Add line to you Package.swift dependencies:
 
 ```
-.package(url: "https://github.com/DimaRU/FastDDSPrebuild.git", from: "2.0.0")
+.package(url: "https://github.com/literally-anything/Fast-DDS-Prebuild.git", from: "3.0.1")
 ```
 
-Right now used with the FastRTPSSwift library: [https://github.com/DimaRU/FastRTPSSwift](https://github.com/DimaRU/FastRTPSSwift)
-
-### Xcode 12 bug note!
-
-Xcode 12 now has a bug that causes static library .a files to be copied into the app bundle. Add `Run Script` to your Xcode project with this commands:
-
+### Build It Yourself
+To build version 3.0.1 from sources, run:
 ```
-# Remove static libs
-ls -1 ${CODESIGNING_FOLDER_PATH}/Contents/Frameworks/*.a
-rm -f ${CODESIGNING_FOLDER_PATH}/Contents/Frameworks/*.a
-
+bash build.bash v3.0.1
 ```
-
-### Build your own repo from source
 
 #### Requirements 
 
-- Xcode 15
-- cmake 3.28
-- [github cli](https://github.com/cli/cli). GitHub’s official command line tool.
-- [xczip](https://github.com/DimaRU/xczip). Create xcframework zip archive for Swift binary package.
-
-#### Steps for build
-
-1. Install gh: `brew install gh`
-2. Install xczip: `brew install DimaRU/formulae/xczip`
-3. Authorize gh: `gh auth`
-4. Clone this repo
-5. Checkout *script* branch `git switch script`
-6. Make your own repo
-5. Run `./script/fastrtps_build_xctframework.sh repo_path v2.6.7 commit`
+- Xcode Command Line Tools
+- cmake 3.30
