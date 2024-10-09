@@ -54,7 +54,7 @@
 
 // Security
 #ifndef HAVE_SECURITY
-#define HAVE_SECURITY 0
+#define HAVE_SECURITY 1
 #endif /* ifndef HAVE_SECURITY */
 
 //Sqlite3 support
@@ -67,7 +67,7 @@
 
 // TLS support
 #ifndef TLS_FOUND
-#define TLS_FOUND 0
+#define TLS_FOUND 1
 #endif /* ifndef TLS_FOUND */
 
 // Strict real-time

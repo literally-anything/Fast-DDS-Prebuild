@@ -1,0 +1,8 @@
+set(CMAKE_SYSTEM_NAME visionOS)
+set(CMAKE_OSX_ARCHITECTURES arm64)
+set(CMAKE_XCODE_ATTRIBUTE_SUPPORTED_PLATFORMS xrsimulator)
+
+set(CMAKE_CXX_FLAGS "-Wno-shorten-64-to-32 -std=c++17")
+
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
